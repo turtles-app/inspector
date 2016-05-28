@@ -1,4 +1,8 @@
 var app = angular.module("app", []);
+var dragData = {
+	type: '',
+	index: null
+};
 
 var nodes = new vis.DataSet([
 	{id: 1, label: '(A u B) u ( (C u D) u E)', level: 0},
@@ -39,4 +43,4 @@ var options = {
 	interaction: {dragView: false}
 };
 
-var network = new vis.Network(container, data, options);
+// var network = new vis.Network(container, data, options);

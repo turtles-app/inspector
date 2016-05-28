@@ -1,10 +1,44 @@
+#hard-coded-network: {
+    position: relative;
+    display: inline-block;
+    width: 500px;
+    border: 2px solid black;
+}
+#inspector-network: {
+    position: relative;
+    display: inline-block;
+    width: 500px;
+    border: 2px solid black;
+}
 #mynetwork {
-    width: 600px;
+    width: 500px;
     height: 400px;
     border: 1px solid lightgray;
+    position: relative;
+    display: inline-block;
 }
 #apiNetwork {
-    width: 600px;
+    width: 500px;
     height: 400px;
-    border: 1px solid lightgray;    	
+    border: 1px solid lightgray; 
+    display: inline-block;
+    position: relative;   	
+}
+
+#universe {
+    position: relative;
+    width: 500px;
+    height: 300px;
+    display: block;
+}
+.set {
+    position: relative;
+    display: inline-block;
+    width: 15%;
+    margin-left: 20px;
+}
+
+.set-img {
+    position: relative;
+    width: 75px;
 }

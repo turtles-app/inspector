@@ -16,15 +16,26 @@
 </head>
 <body ng-app="app">
 	<div ng-controller="inspectorController as inspector">
-		<p>Set Names</p>
-		<div ng-repeat="set in inspector.sets">{{set.strEquivalents[set.eqActiveIndex]}}</div>
-		<p>Hard Coded Network</p>
-		<div id="mynetwork"></div>
-		<p>api Generated Network</p>
-		<div id="apiNetwork"></div>
+		<div id="universe">
+			<p>Sets</p>
+			<div ng-repeat="set in inspector.sets" class='set'>
+				{{set.strEquivalents[set.eqActiveIndex]}}
+				<img ng-src="./img/{{set.type}}.png" class='set-img' my-draggable  type="set.type" index="$index">
+			</div>
+		</div>
+<!-- 		<div id="hard-coded-network">
+			<p>Hard Coded Network</p>
+			<div id="mynetwork"></div>
+		</div> -->
+		<div id="inspector-network" my-droppable allowed="inspector.dropAllowed" drop="inspector.drop">
+			<p>Inspector Tree</p>
+			<div id="apiNetwork"></div>
+		</div>
 	</div>
 	<!-- app -->
 	<script type="text/javascript" src="./js/app.js"></script>
+	<script type="text/javascript" src="./js/directives/draggable.js"></script>
+	<script type="text/javascript" src="./js/directives/droppable.js"></script>
 	<script type="text/javascript" src="./js/inspectorController.js"></script>
 </body>
 </html>

@@ -45,11 +45,47 @@ app.controller('inspectorController', [function () {
 	var container = document.getElementById("apiNetwork");
 	
 	//Configure options
-	this.options = {
+	self.options = {
 	nodes: {physics: false},
 	layout: {hierarchical: true},
 	interaction: {dragView: false}
 	};
 
-	this.tree = new vis.Network(container, this.data, this.options);
+	self.tree = new vis.Network(container, this.data, this.options);
+
+	/*
+	***Inspect Callback
+	*/
+	self.inspect = function(index) {
+		self.target = self.sets[index];
+		self.nodes = rawNodesForInspector(self.target, self.target.groupIndex, 0);
+		self.edges = rawEdgesForInspector(self.target);
+		self.data = {nodes: self.nodes, edges: self.edges};
+		self.tree = new vis.Network(container, self.data, self.options);
+	};
+
+	/*
+	***Drop functionality
+	*/
+	self.dropAllowed = function () {
+		if (dragData.type === 'sigil' || dragData.type === 'fuse' || dragData.type === "trim" || dragData.type === "core" || dragData.type === "stone" || dragData.type === "rune" || dragData.type === "tool") {
+			return true;
+		} else {
+			return false;
+		}		
+	};
+
+	self.drop = function () {
+		console.log("drop");
+		console.log(dragData);
+		switch (dragData.type) {
+			case 'sigil':
+			case 'fuse':
+			case 'trim':
+				self.inspect(dragData.index);
+				break;
+		}
+		dragData = {type: "", index: null};
+	};
+	self.inspect(7);
 }]);

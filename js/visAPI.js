@@ -2,7 +2,7 @@ var rawNodesForInspector = function (set, initialId, initialLevel) {
 	var id = initialId;
 	var level = initialLevel;
 	var nodes = [];
-	var initialNode = {id: set.groupIndex, label: set.strEquivalents[set.eqActiveIndex], level: level};
+	var initialNode = {id: set.groupIndex, label: set.strEquivalents[set.eqActiveIndex], level: level, shape: 'image', image: './img/inspector-img/inspector-' + set.type + '.png'};
 	nodes.push(initialNode);
 	// Recurse if set has component sets (deeper levels)
 	if (!set.simple) {

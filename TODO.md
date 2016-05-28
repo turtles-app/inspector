@@ -1,6 +1,7 @@
 TODO
 
-*	Background images for nodes
-*	Drag and Drop
-	-	Drag sets
-	-	Drop into inspector
+*	Add stones to inspector view of sigils
+*	Inspect Stone
+*	Inspect Tool
+*	Inspect Rune
+* 	Inspect Runic Key
