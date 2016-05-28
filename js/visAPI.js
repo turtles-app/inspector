@@ -16,7 +16,21 @@ var rawNodesForInspector = function (set, initialId, initialLevel) {
 		var rightNodes = rawNodesForInspector(set.components[1], id, level);
 		nodes = nodes.concat(leftNodes, rightNodes);
 	}
+	// Ensure unique id's
+	for (var i=0; i<nodes.length; i++) {
+		for (var j=0; j<nodes.length; j++ ) {
+			if (i != j) {
+				if (nodes[i].id === nodes[j].id) {
+					if (i < j) {
+						nodes[j].id += 100;
+					} else {
+						nodes[i].id +=100;
+					}
 
+				};
+			}
+		}
+	}
 	return nodes;
 
 };

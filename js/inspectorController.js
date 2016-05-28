@@ -1,11 +1,11 @@
-app.controller('inspectorController', [function () {
+app.controller('inspectorController', ['$scope', function ($scope) {
 	var self = this;
 
 	/*
 	*
 	***Instance Data
 	*
-	*	 Simple Sets 	*/
+	*	 Simple Sigils (Sets) 	*/
 	self.a = new Set("sets", "A");
 	self.b = new Set("sets", "B");
 	self.c = new Set("sets", "C");
@@ -18,8 +18,20 @@ app.controller('inspectorController', [function () {
 	self.e.groupIndex = 4;
 	self.sets = [self.a, self.b, self.c, self.d, self.e];
 
+
 	/*
-	***Composite Sets (Union)
+	***Stones (Elements)
+	*/
+	self.ruby = new Element("ruby", self.a);
+	self.topaz = new Element("topaz", self.b);
+	self.sapphire = new Element("sapphire", self.c);
+	self.emerald = new Element("emerald", self.d);
+	self.amethyst = new Element("amethyst", self.e);
+	self.stones = [self.ruby, self.topaz, self.sapphire, self.emerald, self.amethyst];
+	self.inspectedStones = [];
+
+	/*
+	***Composite Sigils (Sets)
 	*	
 	* A u B 					*/
 	self.union1 = union("union1", self.a, self.b);
@@ -29,11 +41,26 @@ app.controller('inspectorController', [function () {
 	self.union3 = union("union3", self.union2, self.e);
 	// (A u B) u [(C u D) u E]
 	self.union4 = union("union4", self.union1, self.union3);
+	// A n (A u B)
+	self.intersection1 = intersection("intersection1", self.union1, self.a);
+	self.union5 = union("union5", self.intersection1, self.a);
 	self.union1.groupIndex = 5;
 	self.union2.groupIndex = 6;
 	self.union3.groupIndex = 7;
 	self.union4.groupIndex = 8;
-	self.sets.push(self.union1, self.union2, self.union3, self.union4);
+	self.intersection1.groupIndex = 9;
+	self.union5.groupIndex = 10;
+	self.sets.push(self.union1, self.union2, self.union3, self.union4, self.intersection1, self.union5);
+
+	/*
+	***Runes (Facts)
+	*/
+	self.rune1 = new Fact("ruby", true, self.a.equivalents[self.a.eqActiveIndex]);
+	self.rune2 = new Fact("topaz", true, self.b.equivalents[self.b.eqActiveIndex]);
+	self.rune3 = new Fact("sapphire", true, self.c.equivalents[self.c.eqActiveIndex]);
+	self.rune4 = new Fact("emerald", true, self.d.equivalents[self.d.eqActiveIndex]);
+	self.rune5 = new Fact("amethyst", true, self.e.equivalents[self.e.eqActiveIndex]);
+	self.runes = [self.rune1, self.rune2, self.rune3, self.rune4, self.rune5];
 
 	/*
 	***Network Data & Config
@@ -57,11 +84,22 @@ app.controller('inspectorController', [function () {
 	***Inspect Callback
 	*/
 	self.inspect = function(index) {
-		self.target = self.sets[index];
-		self.nodes = rawNodesForInspector(self.target, self.target.groupIndex, 0);
-		self.edges = rawEdgesForInspector(self.target);
-		self.data = {nodes: self.nodes, edges: self.edges};
-		self.tree = new vis.Network(container, self.data, self.options);
+		switch (dragData.type) {
+			case 'sigil':
+			case 'fuse':
+			case 'trim':
+				self.target = self.sets[index];
+				self.target.setKnownElements(self.runes);
+				self.inspectedStones = self.target.knownElements;
+				self.nodes = rawNodesForInspector(self.target, self.target.groupIndex, 0);
+				console.log(self.nodes);
+				self.edges = rawEdgesForInspector(self.target);
+				console.log(self.edges);
+				self.data = {nodes: self.nodes, edges: self.edges};
+				self.tree.setData({nodes: self.nodes, edges: self.edges});
+				$scope.$apply();
+			break;
+		}
 	};
 
 	/*
@@ -76,8 +114,6 @@ app.controller('inspectorController', [function () {
 	};
 
 	self.drop = function () {
-		console.log("drop");
-		console.log(dragData);
 		switch (dragData.type) {
 			case 'sigil':
 			case 'fuse':

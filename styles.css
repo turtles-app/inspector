@@ -25,6 +25,18 @@
     position: relative;   	
 }
 
+#inspectedStones {
+    position: relative;
+    display: block;
+    width: 500px;
+    height: 150px;
+}
+.inspectedStone {
+    position: relative;
+    display: inline-block;
+    width: 5%;
+}
+
 #universe {
     position: relative;
     width: 500px;

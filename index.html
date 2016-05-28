@@ -5,6 +5,7 @@
 	<!-- Dependencies -->
 	<script type="text/javascript" src="./node_modules/vis/dist/vis.js"></script>
 	<script type="text/javascript" src="./js/angular.js"></script>
+	<script type="text/javascript" src="./js/lodash.js"></script>
 	<!-- api's -->
 	<script type="text/javascript" src="./js/engine/setEngine.js"></script>
 	<script type="text/javascript" src="./js/engine/proofEngine.js"></script>
@@ -27,9 +28,17 @@
 			<p>Hard Coded Network</p>
 			<div id="mynetwork"></div>
 		</div> -->
+		<!-- Inspector Tree -->
 		<div id="inspector-network" my-droppable allowed="inspector.dropAllowed" drop="inspector.drop">
 			<p>Inspector Tree</p>
 			<div id="apiNetwork"></div>
+			<!-- Stones (Elements) known to resonate with inspected Sigil (Set) -->
+			<div id="inspectedStones">
+				<p>Known Resonant Stones</p>
+				<div ng-repeat="stone in inspector.inspectedStones">
+					<img ng-src="./img/{{stone.name}}.png" class="inspectedStone">
+				</div>
+			</div>
 		</div>
 	</div>
 	<!-- app -->
