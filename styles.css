@@ -24,6 +24,13 @@
     display: inline-block;
     position: relative;   	
 }
+#newNetwork {
+    width: 500px;
+    height: 400px;
+    border: 1px solid lightgray; 
+    display: inline-block;
+    position: relative;     
+}
 
 #inspectedStones {
     position: relative;

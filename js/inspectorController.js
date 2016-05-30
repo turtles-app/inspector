@@ -65,11 +65,12 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	/*
 	***Network Data & Config
 	*/
-	self.nodes = rawNodesForInspector(self.union4, 1, 0);
-	self.edges = rawEdgesForInspector(self.union4);
-	self.data = {nodes: self.nodes, edges: self.edges};
+	// self.nodes = rawNodesForInspector(self.union4, 1, 0);
+	// self.edges = rawEdgesForInspector(self.union4);
+	self.data = sigilTreeData(self.union5, 0, {});
 	// Container element of api generated network
-	var container = document.getElementById("apiNetwork");
+	// var container = document.getElementById("apiNetwork");
+	var container = document.getElementById("newNetwork");
 	
 	//Configure options
 	self.options = {
@@ -91,12 +92,13 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 				self.target = self.sets[index];
 				self.target.setKnownElements(self.runes);
 				self.inspectedStones = self.target.knownElements;
-				self.nodes = rawNodesForInspector(self.target, self.target.groupIndex, 0);
-				console.log(self.nodes);
-				self.edges = rawEdgesForInspector(self.target);
-				console.log(self.edges);
-				self.data = {nodes: self.nodes, edges: self.edges};
-				self.tree.setData({nodes: self.nodes, edges: self.edges});
+				self.data = sigilTreeData(self.target, 0, {});
+				var data = {
+					'nodes': self.data.nodes,
+					'edges': self.data.edges
+				};
+				// self.tree.setData(container2, self.data, self.options);
+				self.tree.setData({nodes: data.nodes, edges: data.edges});
 				$scope.$apply();
 			break;
 		}

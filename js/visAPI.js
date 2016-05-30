@@ -1,57 +1,61 @@
-var rawNodesForInspector = function (set, initialId, initialLevel) {
-	var id = initialId;
-	var level = initialLevel;
+var sigilTreeData = function (set, initialLevel, occurances) {
 	var nodes = [];
-	var initialNode = {id: set.groupIndex, label: set.strEquivalents[set.eqActiveIndex], level: level, shape: 'image', image: './img/inspector-img/inspector-' + set.type + '.png'};
-	nodes.push(initialNode);
-	// Recurse if set has component sets (deeper levels)
-	if (!set.simple) {
-		// id = nodes[nodes.length - 1].id + 1;
-		level++;
-		// Recurse for 1st half of component sets
-		var leftNodes = rawNodesForInspector(set.components[0], id, level);
-		id = leftNodes[leftNodes.length - 1].id + 1;
-		level = leftNodes[0].level;
-		// Recurse for 2nd half of component sets
-		var rightNodes = rawNodesForInspector(set.components[1], id, level);
-		nodes = nodes.concat(leftNodes, rightNodes);
-	}
-	// Ensure unique id's
-	for (var i=0; i<nodes.length; i++) {
-		for (var j=0; j<nodes.length; j++ ) {
-			if (i != j) {
-				if (nodes[i].id === nodes[j].id) {
-					if (i < j) {
-						nodes[j].id += 100;
-					} else {
-						nodes[i].id +=100;
-					}
-
-				};
-			}
-		}
-	}
-	return nodes;
-
-};
-
-var rawEdgesForInspector = function (set) {
 	var edges = [];
-	if (!set.simple) {
-		// First layer of edges
-		edges.push({from: set.groupIndex, to: set.components[0].groupIndex});
-		edges.push({from: set.groupIndex, to: set.components[1].groupIndex});
+	var id = set.groupIndex;
+	var setName = set.strEquivalents[set.eqActiveIndex];
 
-		// console.log("\nFirst layer of edges for " + set.strEquivalents[set.eqActiveIndex]);
-		// console.log(set.components[0].strEquivalents[set.components[0].eqActiveIndex] + " group index: " + set.components[0].groupIndex);
-		// console.log({from: set.groupIndex, to: set.components[0].groupIndex});
-		// console.log(set.components[1].strEquivalents[set.components[1].eqActiveIndex] + " group index: " + set.components[1].groupIndex);
-		// console.log({from: set.groupIndex, to: set.components[1].groupIndex});
-		
-		// Recursive calls for deeper edges
-		var leftEdges = rawEdgesForInspector(set.components[0]);
-		var rightEdges = rawEdgesForInspector(set.components[1]);
-		edges = edges.concat(leftEdges, rightEdges);
+	if (_.hasIn(occurances, setName)) {
+		id += 100*occurances[setName];
+		occurances[setName]++;
+	} else {
+		occurances[setName] = 1;
 	}
-	return edges;
+	var initialNode = {
+		'id': id, 'label': setName, level: initialLevel, 'shape': 'image', image: './img/inspector-img/inspector-' + set.type + '.png'
+	};
+	nodes.push(initialNode);
+	// Draw edges and recurse if sigil is composite
+	if (!set.simple) {
+		var leftId = set.components[0].groupIndex;
+		var rightId = set.components[1].groupIndex;
+		var leftName = set.components[0].strEquivalents[set.components[0].eqActiveIndex];
+		var rightName = set.components[1].strEquivalents[set.components[1].eqActiveIndex];
+		// If components are repeated nodes,
+		// adjust the IDs used to draw edges to them
+		// Objects to store deeper levels of nodes and edges
+		var leftData = {'nodes': [], 'edges': [], 'occurances': occurances};
+		var rightData = {'nodes': [], 'edges': [], 'occurances': occurances};
+		// Recurse for component sigils' nodes and edges 
+		leftData = sigilTreeData(set.components[0], initialLevel+1, occurances);
+		// Capture any reoccuring nodes from previous recursion
+		occurances = leftData.occurances;
+		if ( occurances[leftName] > 1) {
+			// Adjust id of child sigil for edge (in repeat case)
+			leftId += 100*(occurances[leftName] - 1);
+			occurances[leftName]++;
+		}
+		rightData = sigilTreeData(set.components[1], initialLevel+1, occurances);
+		occurances = rightData.occurances;
+		
+		if ( occurances[rightName] > 1) {
+			// Adjust id of child sigil for edge (in repeat case)
+			rightId += 100*(occurances[rightName] - 1);
+			occurances[rightName]++;
+		}
+		// Edges to direct children
+		var leftEdge = {'from': id, 'to': leftId};
+		var rightEdge = {'from': id, 'to': rightId};
+		edges.push(leftEdge, rightEdge);
+		// Compile data
+		nodes = nodes.concat(leftData.nodes, rightData.nodes);
+		edges = edges.concat(leftData.edges, rightData.edges);
+	}
+
+	var res = {
+		nodes: nodes,
+		edges: edges,
+		occurances: occurances
+	};
+
+	return res;
 }
