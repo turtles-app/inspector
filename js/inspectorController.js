@@ -4,8 +4,15 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	/*
 	*
 	***Instance Data
-	*
-	*	 Simple Sigils (Sets) 	*/
+	*	
+	*/
+	self.tools = ['forge', 'fuser', 'crafter'];
+	self.inspectType = '';
+	self.text = "";
+
+	/*
+	***Simple Sigils (Sets)
+	*	  						*/
 	self.a = new Set("sets", "A");
 	self.b = new Set("sets", "B");
 	self.c = new Set("sets", "C");
@@ -65,8 +72,6 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	/*
 	***Network Data & Config
 	*/
-	// self.nodes = rawNodesForInspector(self.union4, 1, 0);
-	// self.edges = rawEdgesForInspector(self.union4);
 	self.data = sigilTreeData(self.union5, 0, {});
 	// Container element of api generated network
 	// var container = document.getElementById("apiNetwork");
@@ -85,6 +90,7 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	***Inspect Callback
 	*/
 	self.inspect = function(index) {
+		self.inspectType = dragData.type;
 		switch (dragData.type) {
 			case 'sigil':
 			case 'fuse':
@@ -97,13 +103,34 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 					'nodes': self.data.nodes,
 					'edges': self.data.edges
 				};
-				// self.tree.setData(container2, self.data, self.options);
 				self.tree.setData({nodes: data.nodes, edges: data.edges});
+				self.text = self.target.strEquivalents[self.target.eqActiveIndex];
 				$scope.$apply();
 			break;
 		}
 	};
 
+	// When tool is dropped into inspector
+	self.toolText = function () {
+		self.target = self.tools[dragData.index];
+		self.tree.setData({nodes: null, edges: null});
+		switch (self.tools[dragData.index]) {
+			case 'forge':
+				self.text = "This forge makes sigils. Stones dragged here will resonate with the new sigil.";
+				break;
+			case 'fuser':
+				self.text = "The fuser combines two sigils into a new sigil. All stones resonant with either component sigil remain resonant with the fused sigil.";
+				break;
+			case 'crafter':
+				self.text = "The crafter creates new runes by engraving a sigil, and embbedding a resonant stone. Runes engraved with composite sigils require other runes as justification."
+				break;
+		}
+		dragData = {
+			type: '',
+			index: null
+		};
+		$scope.$apply();
+	};
 	/*
 	***Drop functionality
 	*/
@@ -121,6 +148,10 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 			case 'fuse':
 			case 'trim':
 				self.inspect(dragData.index);
+				break;
+			case 'tool':
+				console.log("dropped tool");
+				self.toolText();
 				break;
 		}
 		dragData = {type: "", index: null};

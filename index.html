@@ -31,14 +31,21 @@
 		<!-- Inspector Tree -->
 		<div id="inspector-network" my-droppable allowed="inspector.dropAllowed" drop="inspector.drop">
 			<p>Inspector Tree</p>
-			<div id="newNetwork"></div>
+			<div id="newNetwork" ></div>
 			<!-- Stones (Elements) known to resonate with inspected Sigil (Set) -->
-			<div id="inspectedStones">
+			<div id="inspectedStones" ng-if="inspector.targetType==='sigil' || inspector.targetType==='fuse' || inspector.targetType==='trim'">
 				<p>Known Resonant Stones</p>
 				<div ng-repeat="stone in inspector.inspectedStones">
 					<img ng-src="./img/{{stone.name}}.png" class="inspectedStone">
 				</div>
+				<!-- Not working -->
+				<img ng-if="inspector.targetType==='tool'" ng-src="./img/{{self.target}}.png">
 			</div>
+			<div>{{inspector.text}}</div>
+		</div>
+		<!-- Tools -->
+		<div id="toolbox">
+			<img ng-repeat="tool in inspector.tools" ng-src="./img/{{tool}}.png" my-draggable type="'tool'" index="$index">
 		</div>
 	</div>
 	<!-- app -->
