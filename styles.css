@@ -34,8 +34,9 @@
 }
 
 #inspectedStones {
-    position: relative;
-    display: block;
+    position: absolute;
+    display: inline-block;
+    bottom: 55%;
     width: 500px;
     height: 150px;
 }
@@ -61,4 +62,9 @@
 .set-img {
     position: relative;
     width: 75px;
+}
+
+#inspectedTool {
+    position: absolute;
+    /*left: 100%;*/
 }

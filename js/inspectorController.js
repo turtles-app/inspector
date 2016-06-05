@@ -90,7 +90,8 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	***Inspect Callback
 	*/
 	self.inspect = function(index) {
-		self.inspectType = dragData.type;
+		self.targetType = dragData.type;
+		console.log(self.targetType);
 		switch (dragData.type) {
 			case 'sigil':
 			case 'fuse':
@@ -113,6 +114,8 @@ app.controller('inspectorController', ['$scope', function ($scope) {
 	// When tool is dropped into inspector
 	self.toolText = function () {
 		self.target = self.tools[dragData.index];
+		console.log(self.target);
+		self.targetType = 'tool';
 		self.tree.setData({nodes: null, edges: null});
 		switch (self.tools[dragData.index]) {
 			case 'forge':
